@@ -16,6 +16,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
 
   artemis:
     broker-url: tcp://localhost:61616

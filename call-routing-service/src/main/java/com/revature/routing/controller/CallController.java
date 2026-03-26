@@ -2,6 +2,7 @@ package com.revature.routing.controller;
 
 import com.revature.routing.entity.InboundCall;
 import com.revature.routing.service.RoutingService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +20,7 @@ public class CallController {
         this.routingService = routingService;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<InboundCall> getCalls(
             @RequestParam(name = "agent-id", required = false) Long agentId
     ) {
