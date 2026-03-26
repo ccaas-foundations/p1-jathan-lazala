@@ -1,4 +1,4 @@
-package com.revature.agent.entity;
+package com.revature.routing.entity;
 
 public enum InboundCallStatus {
     ASSIGNED, COMPLETED, ABANDONED

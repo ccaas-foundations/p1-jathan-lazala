@@ -1,14 +1,8 @@
 package com.revature.routing.entity;
 
-
-import com.revature.agent.entity.Agent;
-import com.revature.agent.entity.CallCategory;
-import com.revature.agent.entity.InboundCallStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
-
 
 @Entity
 public class InboundCall {
@@ -27,27 +21,31 @@ public class InboundCall {
     @Column(nullable = false)
     private CallCategory callCategory;
 
-    @ManyToOne
-    @JoinColumn(name = "assigned_agent_id")
-    private Agent assignedAgent;
+    @Column(nullable = false)
+    private Long assignedAgentId;
 
     @Column(nullable = false)
-    private LocalDateTime recievedAt;
+    private LocalDateTime receivedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private InboundCallStatus status;
 
     public InboundCall() {
+    }
 
+    @PrePersist
+    public void prePersist() {
+        if (receivedAt == null) {
+            receivedAt = LocalDateTime.now();
+        }
+        if (status == null) {
+            status = InboundCallStatus.ASSIGNED;
+        }
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getCallId() {
@@ -74,12 +72,20 @@ public class InboundCall {
         this.callCategory = callCategory;
     }
 
-    public LocalDateTime getRecievedAt() {
-        return recievedAt;
+    public Long getAssignedAgentId() {
+        return assignedAgentId;
     }
 
-    public void setRecievedAt(LocalDateTime recievedAt) {
-        this.recievedAt = recievedAt;
+    public void setAssignedAgentId(Long assignedAgentId) {
+        this.assignedAgentId = assignedAgentId;
+    }
+
+    public LocalDateTime getReceivedAt() {
+        return receivedAt;
+    }
+
+    public void setReceivedAt(LocalDateTime receivedAt) {
+        this.receivedAt = receivedAt;
     }
 
     public InboundCallStatus getStatus() {
@@ -88,38 +94,5 @@ public class InboundCall {
 
     public void setStatus(InboundCallStatus status) {
         this.status = status;
-    }
-
-    public Agent getAssignedAgent() {
-        return assignedAgent;
-    }
-
-    public void setAssignedAgent(Agent assignedAgent) {
-        this.assignedAgent = assignedAgent;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        InboundCall that = (InboundCall) o;
-        return Objects.equals(id, that.id) && Objects.equals(callId, that.callId) && Objects.equals(callerNumber, that.callerNumber) && callCategory == that.callCategory && Objects.equals(assignedAgent, that.assignedAgent) && Objects.equals(recievedAt, that.recievedAt) && status == that.status;
-    }
-
-    @Override
-    public String toString() {
-        return "InboundCall{" +
-                "id=" + id +
-                ", callId='" + callId + '\'' +
-                ", callerNumber='" + callerNumber + '\'' +
-                ", callCategory=" + callCategory +
-                ", assignedAgent=" + assignedAgent +
-                ", recievedAt=" + recievedAt +
-                ", status=" + status +
-                '}';
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, callId, callerNumber, callCategory, assignedAgent, recievedAt, status);
     }
 }

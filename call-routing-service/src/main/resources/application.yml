@@ -25,6 +25,12 @@ spring:
 server:
   port: 8082
 
+app:
+  queue-name: call.routing.queue
+
+agent-service:
+  base-url: http://localhost:8081
+
 eureka:
   client:
     service-url:

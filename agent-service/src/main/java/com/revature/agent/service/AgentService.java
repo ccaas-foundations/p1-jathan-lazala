@@ -1,30 +1,32 @@
 package com.revature.agent.service;
 
+import com.revature.agent.dto.InboundCallResponse;
 import com.revature.agent.entity.Agent;
 import com.revature.agent.entity.AgentStatus;
 import com.revature.agent.entity.CallCategory;
 import com.revature.agent.repository.AgentRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
+import com.revature.agent.specification.AgentSpecifications;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class AgentService {
 
     private final AgentRepository agentRepository;
+    private final RestTemplate restTemplate;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Value("${call-routing-service.base-url}")
+    private String callRoutingBaseUrl;
 
-    public AgentService(AgentRepository agentRepository) {
+    public AgentService(AgentRepository agentRepository, RestTemplate restTemplate) {
         this.agentRepository = agentRepository;
+        this.restTemplate = restTemplate;
     }
 
     public List<Agent> getAllAgents() {
@@ -37,18 +39,7 @@ public class AgentService {
     }
 
     public List<Agent> getAvailableAgentsByCategory(CallCategory category) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Agent> cq = cb.createQuery(Agent.class);
-        Root<Agent> root = cq.from(Agent.class);
-
-        cq.select(root).where(
-                cb.and(
-                        cb.equal(root.get("status"), AgentStatus.AVAILABLE),
-                        cb.isMember(category, root.get("categories"))
-                )
-        );
-
-        return entityManager.createQuery(cq).getResultList();
+        return agentRepository.findAll(AgentSpecifications.availableForCategory(category));
     }
 
     public Agent createAgent(Agent agent) {
@@ -59,5 +50,15 @@ public class AgentService {
         Agent agent = getAgentById(id);
         agent.setStatus(status);
         return agentRepository.save(agent);
+    }
+
+    public List<InboundCallResponse> getCallsForAgent(Long agentId) {
+        getAgentById(agentId);
+        String url = callRoutingBaseUrl + "/calls?agent-id=" + agentId;
+        InboundCallResponse[] calls = restTemplate.getForObject(url, InboundCallResponse[].class);
+        if (calls == null) {
+            return List.of();
+        }
+        return Arrays.asList(calls);
     }
 }
