@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
+
+//JMS receives XML message and passes it to the routing service by unmarshalling it
+//RoutingService routes call to agent
 @Component
 public class CallEventListener {
 
@@ -21,6 +24,7 @@ public class CallEventListener {
         this.routingService = routingService;
     }
 
+    //Queue
     @JmsListener(destination = "${app.queue-name}")
     public void receiveMessage(String xmlMessage) {
         try {

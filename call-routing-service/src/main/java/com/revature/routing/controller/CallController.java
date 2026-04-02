@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+
+ //querying routed calls stored in this service's database..
+ 
 @RestController
 @RequestMapping("/calls")
 public class CallController {
@@ -20,6 +23,7 @@ public class CallController {
         this.routingService = routingService;
     }
 
+    /** Optional agent-id; omit for all calls. */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<InboundCall> getCalls(
             @RequestParam(name = "agent-id", required = false) Long agentId

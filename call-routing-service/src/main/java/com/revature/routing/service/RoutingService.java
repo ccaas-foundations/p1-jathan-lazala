@@ -23,6 +23,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+/** Queue event - available agent - save */
 @Service
 public class RoutingService {
 
@@ -39,6 +40,7 @@ public class RoutingService {
         this.restTemplate = restTemplate;
     }
 
+    /** Handle one call event end-to-end. */
     @Transactional
     public void routeCall(CallEvent event) {
         CallCategory category = parseCategory(event.getCallCategory());
@@ -96,10 +98,6 @@ public class RoutingService {
         }
     }
 
-    /**
-     * Uses event timestamp for {@code receivedAt} when present. Accepts ISO-8601 with Z (e.g. spec sample)
-     * or date-time without offset. On blank or parse failure, returns null so {@code @PrePersist} sets now.
-     */
     private LocalDateTime parseEventTimestamp(String raw) {
         if (raw == null || raw.isBlank()) {
             return null;

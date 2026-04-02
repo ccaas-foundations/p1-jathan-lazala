@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+/** One routed call row. */
 @Entity
 public class InboundCall {
 
@@ -34,6 +35,7 @@ public class InboundCall {
     public InboundCall() {
     }
 
+    /** Fill receivedAt/status if missing. */
     @PrePersist
     public void prePersist() {
         if (receivedAt == null) {
