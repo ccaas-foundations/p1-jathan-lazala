@@ -16,11 +16,10 @@ public class CallEventListener {
 
     private static final Logger log = LoggerFactory.getLogger(CallEventListener.class);
 
-    private final XmlMapper xmlMapper;
+    private final XmlMapper xmlMapper = new XmlMapper();
     private final RoutingService routingService;
 
-    public CallEventListener(XmlMapper xmlMapper, RoutingService routingService) {
-        this.xmlMapper = xmlMapper;
+    public CallEventListener(RoutingService routingService) {
         this.routingService = routingService;
     }
 

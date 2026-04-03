@@ -31,6 +31,9 @@ public class CallController {
         if (agentId != null) {
             return routingService.getCallsByAgentId(agentId);
         }
-        return routingService.getAllCalls();
+        List<InboundCall> listOfInboundCalls = routingService.getAllCalls();
+        System.out.print(listOfInboundCalls);
+        return listOfInboundCalls;
+
     }
 }

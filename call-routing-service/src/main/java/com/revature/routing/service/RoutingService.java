@@ -40,7 +40,7 @@ public class RoutingService {
         this.restTemplate = restTemplate;
     }
 
-    /** Handle one call event end-to-end. */
+    /** Handle one call event end to end. */
     @Transactional
     public void routeCall(CallEvent event) {
         CallCategory category = parseCategory(event.getCallCategory());
